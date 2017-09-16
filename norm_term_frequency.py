@@ -36,8 +36,8 @@ class MRNormTermFrequency(MRJob):
         yield doc_name, (word, sum(occurrences))
 
     '''
-    Yields [document name, list(word, norm_cumulative_occurrences)] for each document after sorting the list in
-    descendant order using the normalized cumulative occurrences as criterion.
+    Prints [document name, word, norm_cumulative_occurrences] for each document after sorting the list in descendant
+    order using the normalized cumulative occurrences as criterion.
     '''
 
     def reducer_sort_word_and_norm_cumulative_occurrences_for_doc_name(self, doc_name, word_and_cumulative_occurrences):
@@ -61,7 +61,8 @@ class MRNormTermFrequency(MRJob):
 
         # Formats the output to write is as CSV.
         for word, norm_cumulative_occurrences in word_and_cumulative_occurrences_list:
-            yield (None, (doc_name, word, norm_cumulative_occurrences))
+            row = doc_name + "," + word + "," + ('%.6f' % norm_cumulative_occurrences)
+            print row
 
 
 if __name__ == '__main__':

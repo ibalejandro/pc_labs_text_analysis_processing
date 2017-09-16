@@ -67,9 +67,9 @@ class MRDocumentListAndInvertedDocumentFrequency(MRJob):
 
     '''
     Receives every pair produced by the previous Reducer because the yielded key was None.
-    Yields [word, (document name list, inverted document frequency)] for each word after sorting the words in
-    ascendant order using the Inverted Document Frequency as criterion (i.e. the words are sorted in descendant order
-    according to the number of documents in which they appear).
+    Prints [word, document name, inverted document frequency] for each word after sorting the words in ascendant
+    order using the Inverted Document Frequency as criterion (i.e. the words are sorted in descendant order according
+    to the number of documents in which they appear).
     '''
 
     def reducer_sort_doc_names_and_idf_for_word(self, _, word_doc_name_list_and_idf):
@@ -84,7 +84,8 @@ class MRDocumentListAndInvertedDocumentFrequency(MRJob):
         # Yields every record in the correct order and formats the output to write is as CSV.
         for word, (doc_name_list, idf) in word_doc_name_list_and_idf_list:
             for doc_name in doc_name_list:
-                yield (None, (word, doc_name, idf))
+                row = word + "," + doc_name + "," + ('%.6f' % idf)
+                print row
 
 
 if __name__ == '__main__':
