@@ -61,7 +61,7 @@ class MRNormTermFrequency(MRJob):
 
         # Formats the output to write is as CSV.
         for word, norm_cumulative_occurrences in word_and_cumulative_occurrences_list:
-            row = doc_name + "," + word + "," + ('%.6f' % norm_cumulative_occurrences)
+            row = doc_name + ";" + word + ";" + ('%.6f' % norm_cumulative_occurrences)
             print row
 
 

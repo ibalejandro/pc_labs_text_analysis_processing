@@ -84,7 +84,7 @@ class MRDocumentListAndInvertedDocumentFrequency(MRJob):
         # Yields every record in the correct order and formats the output to write is as CSV.
         for word, (doc_name_list, idf) in word_doc_name_list_and_idf_list:
             for doc_name in doc_name_list:
-                row = word + "," + doc_name + "," + ('%.6f' % idf)
+                row = word + ";" + doc_name + ";" + ('%.6f' % idf)
                 print row
 
 
