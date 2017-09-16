@@ -2,6 +2,7 @@ from mrjob.job import MRJob
 from mrjob.step import MRStep
 import re
 import os
+import redis
 
 WORD_RE = re.compile(r"[\w']+")
 
@@ -50,9 +51,11 @@ class MRDocumentsContainingWord(MRJob):
         doc_name_list = []
         for i in range(0, len(doc_name_and_cumulative_occurrences_list)):
             # The document name is the first position of the tuple.
-            doc_name_list.append(doc_name_and_cumulative_occurrences_list[i][0])
+            doc_name_list.append(doc_name_and_cumulative_occurrences_list[i][0].encode('latin1'))
+        r.set(word, doc_name_list)
         yield word, doc_name_list
 
 
 if __name__ == '__main__':
+    r = redis.StrictRedis(host='localhost', port=6379, db=10)
     MRDocumentsContainingWord.run()
