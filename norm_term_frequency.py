@@ -27,7 +27,7 @@ class MRNormTermFrequency(MRJob):
             doc_name = os.getenv('map_input_file')
 
         # In order to yield a pair, the word has to match the RegularExpression WORD_RE.
-        for word in WORD_RE.findall(line):
+        for word in WORD_RE.findall(line.decode('utf-8', 'ignore')):
             yield (doc_name, word.lower()), 1
 
     # Yields [document name, (word, cumulative_occurrences)] for each (document_name, word) key received.
