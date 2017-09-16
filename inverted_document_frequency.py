@@ -48,8 +48,9 @@ class MRInvertedDocumentFrequency(MRJob):
         # The length of the doc_name_and_cumulative_occurrences_list means the number of documents in which the word
         # appears.
         numb_of_documents = len(doc_name_and_cumulative_occurrences_list)
-        # Calculates the Inverted Document Frequency using its formula.
-        inverted_document_frequency = 1 + math.log(TOTAL_NUMB_OF_DOCUMENTS / numb_of_documents)
+        # Calculates the Inverted Document Frequency using its formula. The denominator must be cast to float in order
+        # to obtain a floating point division.
+        inverted_document_frequency = 1 + math.log(TOTAL_NUMB_OF_DOCUMENTS / float(numb_of_documents))
         yield None, (word, inverted_document_frequency)
 
     '''

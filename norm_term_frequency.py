@@ -48,8 +48,8 @@ class MRNormTermFrequency(MRJob):
         for i in range(0, len(word_and_cumulative_occurrences_list)):
             word, cumulative_occurrences = word_and_cumulative_occurrences_list[i]
             # The normalized cumulative occurrences are the cumulative occurrences divided by the number of terms in
-            # the document.
-            norm_cumulative_occurrences = cumulative_occurrences / number_of_terms
+            # the document. The denominator must be cast to float in order to obtain a floating point division.
+            norm_cumulative_occurrences = cumulative_occurrences / float(number_of_terms)
             # The cumulative occurrences for each word are replaced by the normalized cumulative occurrences.
             word_and_cumulative_occurrences_list[i] = (word, norm_cumulative_occurrences)
 
