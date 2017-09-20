@@ -62,7 +62,7 @@ class MRDocumentListAndInvertedDocumentFrequency(MRJob):
         numb_of_documents = len(doc_name_list)
         # Calculates the Inverted Document Frequency using its formula. The denominator must be cast to float in order
         # to obtain a floating point division.
-        inverted_document_frequency = 1 + math.log(TOTAL_NUMB_OF_DOCUMENTS / float(numb_of_documents))
+        inverted_document_frequency = math.log10(TOTAL_NUMB_OF_DOCUMENTS / float(numb_of_documents))
         yield None, (word, (doc_name_list, inverted_document_frequency))
 
     '''
