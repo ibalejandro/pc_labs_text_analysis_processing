@@ -1,6 +1,5 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
-from mr3px.csvprotocol import CsvProtocol
 import re
 import os
 
@@ -9,8 +8,6 @@ WORD_RE = re.compile(r"[\w']+")
 
 # Calculates the normalized Term Frequency (TF) using the given documents.
 class MRNormTermFrequency(MRJob):
-    OUTPUT_PROTOCOL = CsvProtocol  # Writes output as CSV.
-
     def steps(self):
         return [
             MRStep(mapper=self.mapper_get_occurrence_for_doc_name_and_word,
@@ -61,7 +58,7 @@ class MRNormTermFrequency(MRJob):
 
         # Formats the output to write is as CSV.
         for word, norm_cumulative_occurrences in word_and_cumulative_occurrences_list:
-            row = doc_name + ";" + word + ";" + ('%.6f' % norm_cumulative_occurrences)
+            row = doc_name + "," + word + "," + ('%.6f' % norm_cumulative_occurrences)
             print row
 
 

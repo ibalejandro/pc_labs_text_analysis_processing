@@ -1,6 +1,5 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
-from mr3px.csvprotocol import CsvProtocol
 import re
 import os
 import math
@@ -11,8 +10,6 @@ TOTAL_NUMB_OF_DOCUMENTS = 3  # This value needs to be updated with the real tota
 
 # For each word, calculates which documents contain it and its Inverted Document Frequency using the given documents.
 class MRDocumentListAndInvertedDocumentFrequency(MRJob):
-    OUTPUT_PROTOCOL = CsvProtocol  # Writes output as CSV.
-
     def steps(self):
         return [
             MRStep(mapper=self.mapper_get_occurrence_for_word_and_doc_name,
@@ -84,7 +81,7 @@ class MRDocumentListAndInvertedDocumentFrequency(MRJob):
         # Yields every record in the correct order and formats the output to write is as CSV.
         for word, (doc_name_list, idf) in word_doc_name_list_and_idf_list:
             for doc_name in doc_name_list:
-                row = word + ";" + doc_name + ";" + ('%.6f' % idf)
+                row = word + "," + doc_name + "," + ('%.6f' % idf)
                 print row
 
 
