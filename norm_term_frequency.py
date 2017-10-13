@@ -1,7 +1,8 @@
+import os
+import re
+
 from mrjob.job import MRJob
 from mrjob.step import MRStep
-import re
-import os
 
 WORD_RE = re.compile(r"[\w']+")
 

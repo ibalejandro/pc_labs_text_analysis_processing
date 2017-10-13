@@ -1,19 +1,19 @@
-import os
-import re
-
 from mrjob.job import MRJob
 from mrjob.step import MRStep
+import re
+import os
+import redis
 
 WORD_RE = re.compile(r"[\w']+")
 
 
-# For each word, calculates which documents contain it using the given documents.
+# Calculates which documents contain each word for the given documents.
 class MRDocumentsContainingWord(MRJob):
     def steps(self):
         return [
             MRStep(mapper=self.mapper_get_occurrence_for_word_and_doc_name,
                    combiner=self.combiner_sum_occurrences_for_word_and_doc_name,
-                   reducer=self.reducer_sort_doc_names_for_word)
+                   reducer=self.reducer_sort_inverted_file_index_and_get_doc_names_for_word)
         ]
 
     # Yields [(word, document name), occurrence] for each word in the line.
@@ -25,7 +25,7 @@ class MRDocumentsContainingWord(MRJob):
             doc_name = os.getenv('map_input_file')
 
         # In order to yield a pair, the word has to match the RegularExpression WORD_RE.
-        for word in WORD_RE.findall(line.decode('utf-8', 'ignore')):
+        for word in WORD_RE.findall(line):
             yield (word.lower(), doc_name), 1
 
     # Yields [word, (document name, cumulative_occurrences)] for each (word, document_name) key received.
@@ -34,11 +34,11 @@ class MRDocumentsContainingWord(MRJob):
         yield word, (doc_name, sum(occurrences))
 
     '''
-    Prints [word, document name list] for each word after sorting the document name list in descendant order using the
-    cumulative occurrences of the word as criterion.
+    Yields [word, list(document name)] for each word after sorting the list in descendant order using the cumulative
+    occurrences as criterion.
     '''
 
-    def reducer_sort_doc_names_for_word(self, word, doc_name_and_cumulative_occurrences):
+    def reducer_sort_inverted_file_index_and_get_doc_names_for_word(self, word, doc_name_and_cumulative_occurrences):
         # Converts the doc_name_and_cumulative_occurrences (Generator) to a list of tuples.
         doc_name_and_cumulative_occurrences_list = []
         for doc_name, cumulative_occurrences in doc_name_and_cumulative_occurrences:
@@ -50,14 +50,12 @@ class MRDocumentsContainingWord(MRJob):
         # Creates a list containing only the document names after the descendant sorting.
         doc_name_list = []
         for i in range(0, len(doc_name_and_cumulative_occurrences_list)):
-            # The document name is at the first position of the tuple.
-            doc_name_list.append(doc_name_and_cumulative_occurrences_list[i][0])
-
-        # Formats the output to write is as CSV. ';;' is selected as the document name list delimiter to avoid
-        # conflicts on posterior parsing.
-        row = word + "," + "[" + ';;'.join(map(str, doc_name_list)) + "]"
-        print row
+            # The document name is the first position of the tuple.
+            doc_name_list.append(doc_name_and_cumulative_occurrences_list[i][0].encode('latin1'))
+        r.set(word, doc_name_list)
+        yield word, doc_name_list
 
 
 if __name__ == '__main__':
+    r = redis.StrictRedis(host='localhost', port=6379, db=10)
     MRDocumentsContainingWord.run()
