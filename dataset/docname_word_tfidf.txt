@@ -1,0 +1,3 @@
+hdfs://user/admin/5201-8.txt;;CIUTTI;;158
+hdfs://user/admin/5201-8.txt;;Cristofano;;10
+hdfs://user/admin/5201-8.txt;;Brigida;;142
