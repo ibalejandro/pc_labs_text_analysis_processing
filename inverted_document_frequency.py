@@ -27,7 +27,7 @@ class MRInvertedDocumentFrequency(MRJob):
             doc_name = os.getenv('map_input_file')
 
         # In order to yield a pair, the word has to match the RegularExpression WORD_RE.
-        for word in WORD_RE.findall(line.decode('utf-8', 'ignore')):
+        for word in WORD_RE.findall(line.decode('iso-8859-1', 'ignore')):
             yield (word.lower(), doc_name), None
 
     # Yields [word, document name] for each (word, document_name) key received.
@@ -47,7 +47,7 @@ class MRInvertedDocumentFrequency(MRJob):
         inverted_document_frequency = math.log10(TOTAL_NUMB_OF_DOCUMENTS / float(numb_of_documents))
 
         # Formats the output to write is as CSV.
-        row = word + "," + ('%.6f' % inverted_document_frequency)
+        row = word + ";;" + ('%.6f' % inverted_document_frequency)
         print row
 
 

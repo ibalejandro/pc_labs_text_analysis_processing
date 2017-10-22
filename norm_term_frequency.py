@@ -25,7 +25,7 @@ class MRNormTermFrequency(MRJob):
             doc_name = os.getenv('map_input_file')
 
         # In order to yield a pair, the word has to match the RegularExpression WORD_RE.
-        for word in WORD_RE.findall(line.decode('utf-8', 'ignore')):
+        for word in WORD_RE.findall(line.decode('iso-8859-1', 'ignore')):
             yield (doc_name, word.lower()), 1
 
     # Yields [document name, (word, cumulative_occurrences)] for each (document_name, word) key received.
@@ -57,7 +57,7 @@ class MRNormTermFrequency(MRJob):
 
         # Formats the output to write is as CSV.
         for word, norm_cumulative_occurrences in word_and_cumulative_occurrences_list:
-            row = doc_name + "," + word + "," + ('%.6f' % norm_cumulative_occurrences)
+            row = doc_name + ";;" + word + ";;" + ('%.6f' % norm_cumulative_occurrences)
             print row
 
 

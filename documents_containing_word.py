@@ -25,7 +25,7 @@ class MRDocumentsContainingWord(MRJob):
             doc_name = os.getenv('map_input_file')
 
         # In order to yield a pair, the word has to match the RegularExpression WORD_RE.
-        for word in WORD_RE.findall(line.decode('utf-8', 'ignore')):
+        for word in WORD_RE.findall(line.decode('iso-8859-1', 'ignore')):
             yield (word.lower(), doc_name), 1
 
     # Yields [word, (document name, cumulative_occurrences)] for each (word, document_name) key received.
@@ -55,7 +55,7 @@ class MRDocumentsContainingWord(MRJob):
 
         # Formats the output to write is as CSV. ';;' is selected as the document name list delimiter to avoid
         # conflicts on posterior parsing.
-        row = word + "," + "[" + ';;'.join(map(str, doc_name_list)) + "]"
+        row = word + ";;;" + ';;'.join(map(str, doc_name_list))
         print row
 
 
