@@ -1,3 +1,3 @@
 CIUTTI;;;hdfs://user/admin/320-8.txt
-Cristofano;;;hdfs://user/admin/320-8.txt;;hdfs://user/admin/5201-8.txt
+Cristofano;;;hdfs://user/admin/5201-8.txt
 Brigida;;;hdfs://user/admin/320-8.txt;;hdfs://user/admin/5201-8.txt
