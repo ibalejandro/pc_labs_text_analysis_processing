@@ -10,7 +10,7 @@ from mrjob.step import MRStep
 
 # For each word, calculates its Inverted Document Frequency using the given documents.
 class MRInvertedDocumentFrequency(MRJob):
-    TOTAL_NUMB_OF_DOCUMENTS = 3  # This value needs to be updated with the real total number of documents.
+    TOTAL_NUMB_OF_DOCUMENTS = 617
     STOP_WORDS_ES = ["a", "actualmente", "acuerdo", "adelante", "ademas", "además", "adrede", "afirmó", "agregó", "ahi",
                      "ahora", "ahí", "al", "algo", "alguna", "algunas", "alguno", "algunos", "algún", "alli", "allí",
                      "alrededor", "ambos", "ampleamos", "antano", "antaño", "ante", "anterior", "antes", "apenas",
