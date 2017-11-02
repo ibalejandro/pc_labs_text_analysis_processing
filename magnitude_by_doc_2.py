@@ -14,8 +14,6 @@ class MagnitudeByDoc2(MRJob):
     # Yields [(document name, word), occurrence] for each word in the line.
     def mapper(self, _, line):
         # In order to yield a pair, the word has to pass the validation filter.
-        # print(line)
-        #doc_name, magnitude = line.split(";;")
         yield line, 1
 
     # Yields [document name, (word, cumulative_occurrences)] for each (document_name, word) key received.

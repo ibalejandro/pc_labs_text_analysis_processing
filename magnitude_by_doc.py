@@ -1,16 +1,25 @@
-from mrjob.job import MRJob
+# coding=utf-8
 import redis
+from mrjob.job import MRJob
+from mrjob.step import MRStep
+
 
 class MagnitudeByDoc(MRJob):
+    def steps(self):
+        return [
+            MRStep(mapper=self.mapper,
+                   reducer=self.reducer)
+        ]
 
     def mapper(self, _, line):
-        key, magnitude = line.decode('ISO-8859-1', 'ignore').split(';;');
+        key, magnitude = line.split(";;")
         yield key, magnitude
 
     def reducer(self, key, values):
         for value in values:
-            r.set("magnitude:"+key, value)
-            yield key, value
+            r.set("magnitude:" + key, value)
+            print(key, value)
+
 
 if __name__ == '__main__':
     r = redis.from_url(
