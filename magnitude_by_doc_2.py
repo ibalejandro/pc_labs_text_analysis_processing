@@ -20,6 +20,7 @@ class MagnitudeByDoc2(MRJob):
     # Yields [document name, (word, cumulative_occurrences)] for each (document_name, word) key received.
     def reducer(self, doc_name, magnitudes):
         for magnitude in magnitudes:
+            r.set("magnitude:" + doc_name, magnitude)
             print(doc_name, magnitude)
 
 
