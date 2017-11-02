@@ -14,12 +14,14 @@ class MagnitudeByDoc2(MRJob):
     # Yields [(document name, word), occurrence] for each word in the line.
     def mapper(self, _, line):
         # In order to yield a pair, the word has to pass the validation filter.
-        yield line, 1
+        doc_name, magnitude = line.split(";;")
+        yield doc_name, magnitude
 
     # Yields [document name, (word, cumulative_occurrences)] for each (document_name, word) key received.
-    def reducer(self, line, counts):
-        for count in counts:
-            print(line, count)
+    def reducer(self, doc_name, magnitudes):
+        for magnitude in magnitudes:
+            print(doc_name, magnitude)
+
 
 if __name__ == '__main__':
     MagnitudeByDoc2.run()
