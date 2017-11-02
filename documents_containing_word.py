@@ -163,10 +163,11 @@ class MRDocumentsContainingWord(MRJob):
                     norm_word = unicodedata.normalize('NFD', norm_word).encode('ascii', 'ignore')
                     # Removes every special character from the normalized word.
                     norm_word = re.sub(self.SPECIAL_CHARACTERS_RE, '', norm_word)
+                    norm_word = norm_word.lower()
                     # Verifies that the resulting normalized word is not an empty string.
                     if norm_word != "":
                         # Yields the word after the filtering.
-                        yield (norm_word.lower(), doc_name), 1
+                        yield (norm_word, doc_name), 1
             except:
                 # There was a problem filtering the word and it is discarded thus.
                 None

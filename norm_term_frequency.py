@@ -136,6 +136,16 @@ class MRNormTermFrequency(MRJob):
 
     SPECIAL_CHARACTERS_RE = re.compile("[^A-Za-z0-9]+")
 
+    MAIN_WORDS = ["a", "mas", "que", "el", "habia", "project", "o", "no", "casa", "don", "si", "esta", "dios",
+                  "hombre", "y", "vida", "asi", "gutenbergtm", "f", "despues", "m", "senor", "tenia", "ojos", "work",
+                  "e", "padre", "dia", "aqui", "d", "tambien", "tierra", "mujer", "alli", "mi", "fue", "noche", "mano",
+                  "solo", "mundo", "anos", "hombres", "habian", "como", "es", "works", "cabeza", "gutenberg", "cosa",
+                  "rey", "pueblo", "amor", "juan", "se", "voz", "yo", "ella", "hijo", "pues", "tu", "de", "dona", "v",
+                  "manos", "alma", "nombre", "electronic", "puerta", "n", "la", "madre", "joven", "senora", "dias",
+                  "paso", "pero", "podia", "iba", "ciudad", "palabras", "corazon", "agua", "gente", "hacia", "dijo",
+                  "camino", "por", "usted", "punto", "bien", "muerte", "quien", "foundation", "grande", "luz", "san",
+                  "mil", "este", "pobre", "visto"]
+
     def steps(self):
         return [
             MRStep(mapper=self.mapper_get_occurrence_for_doc_name_and_word,
@@ -163,10 +173,11 @@ class MRNormTermFrequency(MRJob):
                     norm_word = unicodedata.normalize('NFD', norm_word).encode('ascii', 'ignore')
                     # Removes every special character from the normalized word.
                     norm_word = re.sub(self.SPECIAL_CHARACTERS_RE, '', norm_word)
+                    norm_word = norm_word.lower()
                     # Verifies that the resulting normalized word is not an empty string.
-                    if norm_word != "":
+                    if norm_word != "" and norm_word in self.MAIN_WORDS:
                         # Yields the word after the filtering.
-                        yield (doc_name, norm_word.lower()), 1
+                        yield (doc_name, norm_word), 1
             except:
                 # There was a problem filtering the word and it is discarded thus.
                 None
