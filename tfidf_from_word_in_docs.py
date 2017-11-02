@@ -1,18 +1,27 @@
-from mrjob.job import MRJob
+# coding=utf-8
+
 import redis
+from mrjob.job import MRJob
+from mrjob.step import MRStep
+
 
 class TfidfFromWordInDocs(MRJob):
+    def steps(self):
+        return [
+            MRStep(mapper=self.mapper,
+                   reducer=self.reducer)
+        ]
 
     def mapper(self, _, line):
-        docname, word, tfidf = line.decode('ISO-8859-1', 'ignore').split(';;');
-        key = docname+';;'+word
-        print key, tfidf
+        doc_name, word, tfidf = line.split(";;");
+        key = doc_name + ";;" + word
         yield key, tfidf
 
-    def reducer(self, key, values):
-        for value in values:
-            r.set("tfidf:"+key, value)
-            yield key, value
+    def reducer(self, key, tfidfs):
+        for tfidf in tfidfs:
+            r.set("tfidf:" + key, tfidf)
+            print(key, tfidf)
+
 
 if __name__ == '__main__':
     r = redis.from_url(
