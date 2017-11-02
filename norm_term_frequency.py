@@ -156,7 +156,7 @@ class MRNormTermFrequency(MRJob):
             try:
                 norm_word = word.lower()
                 if norm_word not in self.STOP_WORDS_ES and norm_word not in self.STOP_WORDS_EN:
-                    # Converts the word to unicode in order to make next transformations.
+                    # Converts the word into unicode in order to make next transformations.
                     norm_word = unicode(norm_word, "iso-8859-1")
                     # Normalizes the unicode word to the 'Normal Form Composed' i.e. replaces accent letters with non
                     # accented ones.
@@ -165,7 +165,7 @@ class MRNormTermFrequency(MRJob):
                     norm_word = re.sub(self.SPECIAL_CHARACTERS_RE, '', norm_word)
                     # Verifies that the resulting normalized word is not an empty string.
                     if norm_word != "":
-                        # Yields the word the filtering.
+                        # Yields the word after the filtering.
                         yield (doc_name, norm_word.lower()), 1
             except:
                 # There was a problem filtering the word and it is discarded thus.
@@ -179,7 +179,7 @@ class MRNormTermFrequency(MRJob):
     # Prints [document name, word, norm_cumulative_occurrences] for each document.
     def reducer_calculate_word_and_norm_cumulative_occurrences_for_doc_name(self, doc_name,
                                                                             word_and_cumulative_occurrences):
-        # Converts the word_and_cumulative_occurrences (Generator) to a list of tuples.
+        # Converts the word_and_cumulative_occurrences (Generator) into a list of tuples.
         word_and_cumulative_occurrences_list = []
         # Counts the number of terms in the document.
         number_of_terms = 0

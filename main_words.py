@@ -1,6 +1,4 @@
 # coding=utf-8
-import math
-import os
 import re
 import unicodedata
 
@@ -8,9 +6,9 @@ from mrjob.job import MRJob
 from mrjob.step import MRStep
 
 
-# For each word, calculates its Inverted Document Frequency using the given documents.
-class MRInvertedDocumentFrequency(MRJob):
-    TOTAL_NUMB_OF_DOCUMENTS = 461
+# Iterates to the whole documents and finds the main words.
+class MRMainWords(MRJob):
+    NUMB_OF_MAIN_WORDS = 100
     STOP_WORDS_ES = ["a", "actualmente", "acuerdo", "adelante", "ademas", "además", "adrede", "afirmó", "agregó", "ahi",
                      "ahora", "ahí", "al", "algo", "alguna", "algunas", "alguno", "algunos", "algún", "alli", "allí",
                      "alrededor", "ambos", "ampleamos", "antano", "antaño", "ante", "anterior", "antes", "apenas",
@@ -136,22 +134,17 @@ class MRInvertedDocumentFrequency(MRJob):
                      "wonder", "would", "wouldn't", "x", "y", "yes", "yet", "you", "you'd", "you'll", "you're",
                      "you've", "your", "yours", "yourself", "yourselves", "z", "zero"]
 
-    SPECIAL_CHARACTERS_RE = re.compile("[^A-Za-z0-9]+")
+    SPECIAL_CHARACTERS_RE = re.compile("[^A-Za-z]+")
 
     def steps(self):
         return [
-            MRStep(mapper=self.mapper_get_occurrence_for_word_and_doc_name,
-                   reducer=self.reducer_calculate_idf_for_word)
+            MRStep(mapper=self.mapper_get_occurrence_for_word,
+                   reducer=self.reducer_sum_occurrences_for_word),
+            MRStep(reducer=self.reducer_sort_words_by_occurrences)
         ]
 
-    # Yields [word, document name] for each word in the line.
-    def mapper_get_occurrence_for_word_and_doc_name(self, _, line):
-        # Gets the input file name.
-        try:
-            doc_name = os.getenv('mapreduce_map_input_file')
-        except KeyError:
-            doc_name = os.getenv('map_input_file')
-
+    # Yields [word, occurrence] for each word in the line.
+    def mapper_get_occurrence_for_word(self, _, line):
         # In order to yield a pair, the word has to pass the validation filter.
         for word in line.split():
             try:
@@ -164,30 +157,43 @@ class MRInvertedDocumentFrequency(MRJob):
                     norm_word = unicodedata.normalize('NFD', norm_word).encode('ascii', 'ignore')
                     # Removes every special character from the normalized word.
                     norm_word = re.sub(self.SPECIAL_CHARACTERS_RE, '', norm_word)
+                    norm_word = norm_word.lower()
                     # Verifies that the resulting normalized word is not an empty string.
                     if norm_word != "":
                         # Yields the word after the filtering.
-                        yield norm_word.lower(), doc_name
+                        yield norm_word, 1
             except:
                 # There was a problem filtering the word and it is discarded thus.
                 None
 
-    # Prints [word, inverted document frequency] for each word.
-    def reducer_calculate_idf_for_word(self, word, doc_names):
-        # Iterates over the doc_names (Generator) to insert them in a set doc_names and get the unique doc_names.
-        unique_doc_name_list = set()
-        for doc_name in doc_names:
-            unique_doc_name_list.add(doc_name)
+    # Yields [None, (word, cumulative_occurrences)] for each (word, occurrences) key received.
+    def reducer_sum_occurrences_for_word(self, norm_word, occurrences):
+        yield None, (norm_word, sum(occurrences))
 
-        # Calculates the Inverted Document Frequency using its formula. The denominator must be cast to float in order
-        # to obtain a floating point division. len(unique_doc_name_list) is the number of documents in which the word
-        # appears.
-        inverted_document_frequency = math.log10(self.TOTAL_NUMB_OF_DOCUMENTS / float(len(unique_doc_name_list)))
+    '''
+    Prints [main word list] after sorting the word list in descendant order using the cumulative occurrences of the
+    word as criterion.
+    '''
 
-        # Formats the output. ';;' is selected to separate the word from its inverted document frequency.
-        row = word + ";;" + ('%.6f' % inverted_document_frequency)
+    def reducer_sort_words_by_occurrences(self, _, norm_word_and_cumulative_occurrences):
+        # Converts the norm_word_and_cumulative_occurrences (Generator) into a list of tuples.
+        norm_word_and_cumulative_occurrences_list = []
+        for norm_word, cumulative_occurrences in norm_word_and_cumulative_occurrences:
+            norm_word_and_cumulative_occurrences_list.append((norm_word, cumulative_occurrences))
+
+        # Sorts the tuple list in descendant order using the cumulative occurrences as criterion.
+        norm_word_and_cumulative_occurrences_list.sort(key=lambda x: x[1], reverse=True)
+
+        # Creates a list containing only the words after the descendant sorting. The maximum length of the list will be
+        # indicated by NUMB_OF_MAIN_WORDS.
+        iterations = min(self.NUMB_OF_MAIN_WORDS, len(norm_word_and_cumulative_occurrences_list))
+        row = "["
+        for i in range(0, iterations):
+            row += "\"" + norm_word_and_cumulative_occurrences_list[i][0] + "\", "
+
+        row += row[:-2] + "]"
         print row
 
 
 if __name__ == '__main__':
-    MRInvertedDocumentFrequency.run()
+    MRMainWords.run()
