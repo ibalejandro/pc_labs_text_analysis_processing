@@ -1,18 +1,27 @@
-from mrjob.job import MRJob
+# coding=utf-8
+
 import redis
+from mrjob.job import MRJob
+from mrjob.step import MRStep
+
 
 class WordInDocs(MRJob):
+    def steps(self):
+        return [
+            MRStep(mapper=self.mapper,
+                   reducer=self.reducer)
+        ]
 
     def mapper(self, _, line):
-        doc_with_similarity = []
-        word, value = line.decode('ISO-8859-1', 'ignore').split(';;;')
-        docs = value.decode('ISO-8859-1', 'ignore').split(';;')
-        yield word, docs
+        word, doc_names_as_string = line.split(";;;")
+        doc_names = doc_names_as_string.split(";;")
+        yield word, doc_names
 
-    def reducer(self, key, values):
-        for value in values:
-            r.lpush("word:" + key, *value)
-            yield key, value
+    def reducer(self, word, doc_names):
+        for doc_name in doc_names:
+            r.lpush("word:" + word, *doc_name)
+            print(word, doc_name)
+
 
 if __name__ == '__main__':
     r = redis.from_url(
