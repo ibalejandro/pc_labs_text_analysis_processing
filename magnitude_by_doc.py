@@ -25,5 +25,6 @@ class MagnitudeByDoc2(MRJob):
 
 
 if __name__ == '__main__':
-    r = redis.from_url("redis://h:padd1089bb3eef4b1bf8c5cd5019461d8f7ad76b4c6960640f882ce0f2a9c86a6@ec2-34-224-49-43.compute-1.amazonaws.com:65139", db=1)
+    r = redis.StrictRedis(host='gutenberg-ir.redis.cache.windows.net', port=6380, db=1,
+                          password='B4qWA879R/U2ldA3mWT5kcJSHrDXOijbd9ju+89PNhg=', ssl=True)
     MagnitudeByDoc2.run()
