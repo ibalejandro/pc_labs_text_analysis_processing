@@ -1,2 +1,0 @@
-8020/user/asanch41/datasets/gutenberg-txt-es/10293.txt;;0.014173682487116396
-8020/user/asanch41/datasets/gutenberg-txt-es/10506.txt;;0.031905803392589235

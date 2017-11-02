@@ -156,7 +156,7 @@ class MRDocumentsContainingWord(MRJob):
             try:
                 norm_word = word.lower()
                 if norm_word not in self.STOP_WORDS_ES and norm_word not in self.STOP_WORDS_EN:
-                    # Converts the word to unicode in order to make next transformations.
+                    # Converts the word into unicode in order to make next transformations.
                     norm_word = unicode(norm_word, "iso-8859-1")
                     # Normalizes the unicode word to the 'Normal Form Composed' i.e. replaces accent letters with non
                     # accented ones.
@@ -165,7 +165,7 @@ class MRDocumentsContainingWord(MRJob):
                     norm_word = re.sub(self.SPECIAL_CHARACTERS_RE, '', norm_word)
                     # Verifies that the resulting normalized word is not an empty string.
                     if norm_word != "":
-                        # Yields the word the filtering.
+                        # Yields the word after the filtering.
                         yield (norm_word.lower(), doc_name), 1
             except:
                 # There was a problem filtering the word and it is discarded thus.
@@ -182,7 +182,7 @@ class MRDocumentsContainingWord(MRJob):
     '''
 
     def reducer_sort_doc_names_for_word(self, word, doc_name_and_cumulative_occurrences):
-        # Converts the doc_name_and_cumulative_occurrences (Generator) to a list of tuples.
+        # Converts the doc_name_and_cumulative_occurrences (Generator) into a list of tuples.
         doc_name_and_cumulative_occurrences_list = []
         for doc_name, cumulative_occurrences in doc_name_and_cumulative_occurrences:
             doc_name_and_cumulative_occurrences_list.append((doc_name, cumulative_occurrences))
