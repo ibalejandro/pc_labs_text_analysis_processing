@@ -1,7 +1,7 @@
 # coding=utf-8
-import unicodedata
 import os
 import re
+import unicodedata
 
 from mrjob.job import MRJob
 from mrjob.step import MRStep
@@ -13,38 +13,31 @@ class MRDocumentsContainingWord(MRJob):
                      "ahora", "ahí", "al", "algo", "alguna", "algunas", "alguno", "algunos", "algún", "alli", "allí",
                      "alrededor", "ambos", "ampleamos", "antano", "antaño", "ante", "anterior", "antes", "apenas",
                      "aproximadamente", "aquel", "aquella", "aquellas", "aquello", "aquellos", "aqui", "aquél",
-                     "aquélla",
-                     "aquéllas", "aquéllos", "aquí", "arriba", "arribaabajo", "aseguró", "asi", "así", "atras", "aun",
-                     "aunque", "ayer", "añadió", "aún", "b", "bajo", "bastante", "bien", "breve", "buen", "buena",
-                     "buenas", "bueno", "buenos", "c", "cada", "casi", "cerca", "cierta", "ciertas", "cierto",
-                     "ciertos",
-                     "cinco", "claro", "comentó", "como", "con", "conmigo", "conocer", "conseguimos", "conseguir",
-                     "considera", "consideró", "consigo", "consigue", "consiguen", "consigues", "contigo", "contra",
-                     "cosas", "creo", "cual", "cuales", "cualquier", "cuando", "cuanta", "cuantas", "cuanto", "cuantos",
-                     "cuatro", "cuenta", "cuál", "cuáles", "cuándo", "cuánta", "cuántas", "cuánto", "cuántos", "cómo",
-                     "d",
-                     "da", "dado", "dan", "dar", "de", "debajo", "debe", "deben", "debido", "decir", "dejó", "del",
-                     "delante", "demasiado", "demás", "dentro", "deprisa", "desde", "despacio", "despues", "después",
-                     "detras", "detrás", "dia", "dias", "dice", "dicen", "dicho", "dieron", "diferente", "diferentes",
-                     "dijeron", "dijo", "dio", "donde", "dos", "durante", "día", "días", "dónde", "e", "ejemplo", "el",
-                     "ella", "ellas", "ello", "ellos", "embargo", "empleais", "emplean", "emplear", "empleas", "empleo",
-                     "en", "encima", "encuentra", "enfrente", "enseguida", "entonces", "entre", "era", "eramos", "eran",
-                     "eras", "eres", "es", "esa", "esas", "ese", "eso", "esos", "esta", "estaba", "estaban", "estado",
-                     "estados", "estais", "estamos", "estan", "estar", "estará", "estas", "este", "esto", "estos",
-                     "estoy",
-                     "estuvo", "está", "están", "ex", "excepto", "existe", "existen", "explicó", "expresó", "f", "fin",
-                     "final", "fue", "fuera", "fueron", "fui", "fuimos", "g", "general", "gran", "grandes", "gueno",
-                     "h",
-                     "ha", "haber", "habia", "habla", "hablan", "habrá", "había", "habían", "hace", "haceis", "hacemos",
-                     "hacen", "hacer", "hacerlo", "haces", "hacia", "haciendo", "hago", "han", "hasta", "hay", "haya",
-                     "he", "hecho", "hemos", "hicieron", "hizo", "horas", "hoy", "hubo", "i", "igual", "incluso",
-                     "indicó",
-                     "informo", "informó", "intenta", "intentais", "intentamos", "intentan", "intentar", "intentas",
-                     "intento", "ir", "j", "junto", "k", "l", "la", "lado", "largo", "las", "le", "lejos", "les",
-                     "llegó",
-                     "lleva", "llevar", "lo", "los", "luego", "lugar", "m", "mal", "manera", "manifestó", "mas",
-                     "mayor",
-                     "me", "mediante", "medio", "mejor", "mencionó", "menos", "menudo", "mi", "mia", "mias", "mientras",
+                     "aquélla", "aquéllas", "aquéllos", "aquí", "arriba", "arribaabajo", "aseguró", "asi", "así",
+                     "atras", "aun", "aunque", "ayer", "añadió", "anadió", "aún", "b", "bajo", "bastante", "bien",
+                     "breve", "buen", "buena", "buenas", "bueno", "buenos", "c", "cada", "casi", "cerca", "cierta",
+                     "ciertas", "cierto", "ciertos", "cinco", "claro", "comentó", "como", "con", "conmigo", "conocer",
+                     "conseguimos", "conseguir", "considera", "consideró", "consigo", "consigue", "consiguen",
+                     "consigues", "contigo", "contra", "cosas", "creo", "cual", "cuales", "cualquier", "cuando",
+                     "cuanta", "cuantas", "cuanto", "cuantos", "cuatro", "cuenta", "cuál", "cuáles", "cuándo", "cuánta",
+                     "cuántas", "cuánto", "cuántos", "cómo", "d", "da", "dado", "dan", "dar", "de", "debajo", "debe",
+                     "deben", "debido", "decir", "dejó", "del", "delante", "demasiado", "demás", "dentro", "deprisa",
+                     "desde", "despacio", "despues", "después", "detras", "detrás", "dia", "dias", "dice", "dicen",
+                     "dicho", "dieron", "diferente", "diferentes", "dijeron", "dijo", "dio", "donde", "dos", "durante",
+                     "día", "días", "dónde", "e", "ejemplo", "el", "ella", "ellas", "ello", "ellos", "embargo",
+                     "empleais", "emplean", "emplear", "empleas", "empleo", "en", "encima", "encuentra", "enfrente",
+                     "enseguida", "entonces", "entre", "era", "eramos", "eran", "eras", "eres", "es", "esa", "esas",
+                     "ese", "eso", "esos", "esta", "estaba", "estaban", "estado", "estados", "estais", "estamos",
+                     "estan", "estar", "estará", "estas", "este", "esto", "estos", "estoy", "estuvo", "está", "están",
+                     "ex", "excepto", "existe", "existen", "explicó", "expresó", "f", "fin", "final", "fue", "fuera",
+                     "fueron", "fui", "fuimos", "g", "general", "gran", "grandes", "gueno", "h", "ha", "haber", "habia",
+                     "habla", "hablan", "habrá", "había", "habían", "hace", "haceis", "hacemos", "hacen", "hacer",
+                     "hacerlo", "haces", "hacia", "haciendo", "hago", "han", "hasta", "hay", "haya", "he", "hecho",
+                     "hemos", "hicieron", "hizo", "horas", "hoy", "hubo", "i", "igual", "incluso", "indicó", "informo",
+                     "informó", "intenta", "intentais", "intentamos", "intentan", "intentar", "intentas", "intento",
+                     "ir", "j", "junto", "k", "l", "la", "lado", "largo", "las", "le", "lejos", "les", "llegó", "lleva",
+                     "llevar", "lo", "los", "luego", "lugar", "m", "mal", "manera", "manifestó", "mas", "mayor", "me",
+                     "mediante", "medio", "mejor", "mencionó", "menos", "menudo", "mi", "mia", "mias", "mientras",
                      "mio", "mios", "mis", "misma", "mismas", "mismo", "mismos", "modo", "momento", "mucha", "muchas",
                      "mucho", "muchos", "muy", "más", "mí", "mía", "mías", "mío", "míos", "n", "nada", "nadie", "ni",
                      "ninguna", "ningunas", "ninguno", "ningunos", "ningún", "no", "nos", "nosotras", "nosotros",
@@ -53,30 +46,25 @@ class MRDocumentsContainingWord(MRJob):
                      "pasada", "pasado", "paìs", "peor", "pero", "pesar", "poca", "pocas", "poco", "pocos", "podeis",
                      "podemos", "poder", "podria", "podriais", "podriamos", "podrian", "podrias", "podrá", "podrán",
                      "podría", "podrían", "poner", "por", "porque", "posible", "primer", "primera", "primero",
-                     "primeros",
-                     "principalmente", "pronto", "propia", "propias", "propio", "propios", "proximo", "próximo",
-                     "próximos", "pudo", "pueda", "puede", "pueden", "puedo", "pues", "q", "qeu", "que", "quedó",
-                     "queremos", "quien", "quienes", "quiere", "quiza", "quizas", "quizá", "quizás", "quién", "quiénes",
-                     "qué", "r", "raras", "realizado", "realizar", "realizó", "repente", "respecto", "s", "sabe",
-                     "sabeis",
-                     "sabemos", "saben", "saber", "sabes", "salvo", "se", "sea", "sean", "segun", "segunda", "segundo",
-                     "según", "seis", "ser", "sera", "será", "serán", "sería", "señaló", "si", "sido", "siempre",
-                     "siendo",
-                     "siete", "sigue", "siguiente", "sin", "sino", "sobre", "sois", "sola", "solamente", "solas",
-                     "solo",
-                     "solos", "somos", "son", "soy", "soyos", "su", "supuesto", "sus", "suya", "suyas", "suyo", "sé",
-                     "sí",
-                     "sólo", "t", "tal", "tambien", "también", "tampoco", "tan", "tanto", "tarde", "te", "temprano",
-                     "tendrá", "tendrán", "teneis", "tenemos", "tener", "tenga", "tengo", "tenido", "tenía", "tercera",
-                     "ti", "tiempo", "tiene", "tienen", "toda", "todas", "todavia", "todavía", "todo", "todos", "total",
-                     "trabaja", "trabajais", "trabajamos", "trabajan", "trabajar", "trabajas", "trabajo", "tras",
-                     "trata",
-                     "través", "tres", "tu", "tus", "tuvo", "tuya", "tuyas", "tuyo", "tuyos", "tú", "u", "ultimo", "un",
-                     "una", "unas", "uno", "unos", "usa", "usais", "usamos", "usan", "usar", "usas", "uso", "usted",
-                     "ustedes", "v", "va", "vais", "valor", "vamos", "van", "varias", "varios", "vaya", "veces", "ver",
-                     "verdad", "verdadera", "verdadero", "vez", "vosotras", "vosotros", "voy", "vuestra", "vuestras",
-                     "vuestro", "vuestros", "w", "x", "y", "ya", "yo", "z", "él", "ésa", "ésas", "ése", "ésos", "ésta",
-                     "éstas", "éste", "éstos", "última", "últimas", "último", "últimos"]
+                     "primeros", "principalmente", "pronto", "propia", "propias", "propio", "propios", "proximo",
+                     "próximo", "próximos", "pudo", "pueda", "puede", "pueden", "puedo", "pues", "q", "qeu", "que",
+                     "quedó", "queremos", "quien", "quienes", "quiere", "quiza", "quizas", "quizá", "quizás", "quién",
+                     "quiénes", "qué", "r", "raras", "realizado", "realizar", "realizó", "repente", "respecto", "s",
+                     "sabe", "sabeis", "sabemos", "saben", "saber", "sabes", "salvo", "se", "sea", "sean", "segun",
+                     "segunda", "segundo", "según", "seis", "ser", "sera", "será", "serán", "sería", "señaló", "senaló",
+                     "si", "sido", "siempre", "siendo", "siete", "sigue", "siguiente", "sin", "sino", "sobre", "sois",
+                     "sola", "solamente", "solas", "solo", "solos", "somos", "son", "soy", "soyos", "su", "supuesto",
+                     "sus", "suya", "suyas", "suyo", "sé", "sí", "sólo", "t", "tal", "tambien", "también", "tampoco",
+                     "tan", "tanto", "tarde", "te", "temprano", "tendrá", "tendrán", "teneis", "tenemos", "tener",
+                     "tenga", "tengo", "tenido", "tenía", "tercera", "ti", "tiempo", "tiene", "tienen", "toda", "todas",
+                     "todavia", "todavía", "todo", "todos", "total", "trabaja", "trabajais", "trabajamos", "trabajan",
+                     "trabajar", "trabajas", "trabajo", "tras", "trata", "través", "tres", "tu", "tus", "tuvo", "tuya",
+                     "tuyas", "tuyo", "tuyos", "tú", "u", "ultimo", "un", "una", "unas", "uno", "unos", "usa", "usais",
+                     "usamos", "usan", "usar", "usas", "uso", "usted", "ustedes", "v", "va", "vais", "valor", "vamos",
+                     "van", "varias", "varios", "vaya", "veces", "ver", "verdad", "verdadera", "verdadero", "vez",
+                     "vosotras", "vosotros", "voy", "vuestra", "vuestras", "vuestro", "vuestros", "w", "x", "y", "ya",
+                     "yo", "z", "él", "ésa", "ésas", "ése", "ésos", "ésta", "éstas", "éste", "éstos", "última",
+                     "últimas", "último", "últimos"]
     STOP_WORDS_EN = ["a", "a's", "able", "about", "above", "according", "accordingly", "across", "actually", "after",
                      "afterwards", "again", "against", "ain't", "all", "allow", "allows", "almost", "alone", "along",
                      "already", "also", "although", "always", "am", "among", "amongst", "an", "and", "another", "any",
@@ -134,7 +122,17 @@ class MRDocumentsContainingWord(MRJob):
                      "wonder", "would", "wouldn't", "x", "y", "yes", "yet", "you", "you'd", "you'll", "you're",
                      "you've", "your", "yours", "yourself", "yourselves", "z", "zero"]
 
-    SPECIAL_CHARACTERS_RE = re.compile("[^A-Za-z0-9]+")
+    SPECIAL_CHARACTERS_RE = re.compile("[^A-Za-z]+")
+
+    MAIN_WORDS = ["a", "mas", "que", "el", "habia", "project", "o", "no", "casa", "don", "si", "esta", "dios",
+                  "hombre", "y", "vida", "asi", "gutenbergtm", "f", "despues", "m", "senor", "tenia", "ojos", "work",
+                  "e", "padre", "dia", "aqui", "d", "tambien", "tierra", "mujer", "alli", "mi", "fue", "noche", "mano",
+                  "solo", "mundo", "anos", "hombres", "habian", "como", "es", "works", "cabeza", "gutenberg", "cosa",
+                  "rey", "pueblo", "amor", "juan", "se", "voz", "yo", "ella", "hijo", "pues", "tu", "de", "dona", "v",
+                  "manos", "alma", "nombre", "electronic", "puerta", "n", "la", "madre", "joven", "senora", "dias",
+                  "paso", "pero", "podia", "iba", "ciudad", "palabras", "corazon", "agua", "gente", "hacia", "dijo",
+                  "camino", "por", "usted", "punto", "bien", "muerte", "quien", "foundation", "grande", "luz", "san",
+                  "mil", "este", "pobre", "visto"]
 
     def steps(self):
         return [
@@ -154,20 +152,23 @@ class MRDocumentsContainingWord(MRJob):
         # In order to yield a pair, the word has to pass the validation filter.
         for word in line.split():
             try:
-                norm_word = word.lower()
+                # Converts the word into unicode in order to make next transformations.
+                norm_word = unicode(word, "iso-8859-1")
+                norm_word = norm_word.lower()
+                # Verifies that the word until then is not a stop word.
                 if norm_word not in self.STOP_WORDS_ES and norm_word not in self.STOP_WORDS_EN:
-                    # Converts the word into unicode in order to make next transformations.
-                    norm_word = unicode(norm_word, "iso-8859-1")
                     # Normalizes the unicode word to the 'Normal Form Composed' i.e. replaces accent letters with non
                     # accented ones.
                     norm_word = unicodedata.normalize('NFD', norm_word).encode('ascii', 'ignore')
                     # Removes every special character from the normalized word.
                     norm_word = re.sub(self.SPECIAL_CHARACTERS_RE, '', norm_word)
+                    # Makes possible remaining uppercase letters lowercase ones.
                     norm_word = norm_word.lower()
                     # Verifies that the resulting normalized word is not an empty string.
-                    if norm_word != "":
-                        # Yields the word after the filtering.
-                        yield (norm_word, doc_name), 1
+                    if norm_word != "" and norm_word not in self.STOP_WORDS_ES and norm_word not in self.STOP_WORDS_EN:
+                        if norm_word in self.MAIN_WORDS:
+                            # Yields a key using the word after the filtering.
+                            yield (norm_word, doc_name), 1
             except:
                 # There was a problem filtering the word and it is discarded thus.
                 None
