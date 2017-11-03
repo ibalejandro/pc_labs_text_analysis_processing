@@ -124,15 +124,16 @@ class MRNormTermFrequency(MRJob):
 
     SPECIAL_CHARACTERS_RE = re.compile("[^A-Za-z]+")
 
-    MAIN_WORDS = ["a", "mas", "que", "el", "habia", "project", "o", "no", "casa", "don", "si", "esta", "dios",
-                  "hombre", "y", "vida", "asi", "gutenbergtm", "f", "despues", "m", "senor", "tenia", "ojos", "work",
-                  "e", "padre", "dia", "aqui", "d", "tambien", "tierra", "mujer", "alli", "mi", "fue", "noche", "mano",
-                  "solo", "mundo", "anos", "hombres", "habian", "como", "es", "works", "cabeza", "gutenberg", "cosa",
-                  "rey", "pueblo", "amor", "juan", "se", "voz", "yo", "ella", "hijo", "pues", "tu", "de", "dona", "v",
-                  "manos", "alma", "nombre", "electronic", "puerta", "n", "la", "madre", "joven", "senora", "dias",
-                  "paso", "pero", "podia", "iba", "ciudad", "palabras", "corazon", "agua", "gente", "hacia", "dijo",
-                  "camino", "por", "usted", "punto", "bien", "muerte", "quien", "foundation", "grande", "luz", "san",
-                  "mil", "este", "pobre", "visto"]
+    MAIN_WORDS = ["project", "casa", "don", "dios", "hombre", "vida", "gutenbergtm", "senor", "tenia", "ojos", "work",
+                  "padre", "tierra", "mujer", "noche", "mano", "mundo", "anos", "hombres", "habian", "works", "cabeza",
+                  "gutenberg", "cosa", "rey", "pueblo", "amor", "juan", "voz", "hijo", "dona", "manos", "alma",
+                  "nombre", "electronic", "puerta", "madre", "joven", "senora", "paso", "podia", "iba", "ciudad",
+                  "palabras", "corazon", "agua", "gente", "camino", "punto", "muerte", "foundation", "grande", "luz",
+                  "san", "mil", "demas", "pobre", "visto", "terms", "hija", "algun", "amigo", "parecia", "palabra",
+                  "hubiera", "alla", "mar", "calle", "hijos", "cielo", "manana", "cuerpo", "espana", "seaor", "hora",
+                  "ano", "sol", "caso", "agreement", "rio", "vista", "madrid", "historia", "idea", "fuerza", "razon",
+                  "capitan", "vino", "mujeres", "frente", "puesto", "espiritu", "obra", "pie", "duda", "causa", "orden",
+                  "decia", "seria", "states"]
 
     def steps(self):
         return [
