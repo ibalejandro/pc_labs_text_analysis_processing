@@ -18,8 +18,9 @@ class MRWordInDocs(MRJob):
         word, doc_names_as_string = line.split(";;;")
         # Split the documents string by ';;' characters.
         doc_names = doc_names_as_string.split(";;")
-        # Yield every word with its documents list.
-        yield word, doc_names
+        for doc_name in doc_names:
+            # Yield every word with its documents list.
+            yield word, doc_name
 
     # Yields [document list] for each word in the line.
     def reducer(self, word, doc_names):
@@ -27,7 +28,7 @@ class MRWordInDocs(MRJob):
             # Splits with the second parameter that specifies the maximum number of splits to perform.
             doc_name = doc_name.split(':', 2)[2]
             # Stores document list with word as key in Redis.
-            r.lpush("word:" + word, *doc_name)
+            r.lpush("word:" + word, doc_name)
             # Prints word with its document list.
             print(word, doc_name)
 
