@@ -4,7 +4,8 @@ from mrjob.job import MRJob
 from mrjob.step import MRStep
 import redis
 
-class MagnitudeByDoc2(MRJob):
+# Stores the magnitude for each document.
+class MRMagnitudeByDoc(MRJob):
     def steps(self):
         return [
             MRStep(mapper=self.mapper,
@@ -20,6 +21,7 @@ class MagnitudeByDoc2(MRJob):
     # Yields [document name, (word, cumulative_occurrences)] for each (document_name, word) key received.
     def reducer(self, doc_name, magnitudes):
         for magnitude in magnitudes:
+            # Stores the magnitude of the document.
             r.set("magnitude:" + doc_name, magnitude)
             print(doc_name, magnitude)
 
@@ -27,4 +29,4 @@ class MagnitudeByDoc2(MRJob):
 if __name__ == '__main__':
     r = redis.StrictRedis(host='gutenberg-ir.redis.cache.windows.net', port=6380, db=1,
                           password='B4qWA879R/U2ldA3mWT5kcJSHrDXOijbd9ju+89PNhg=', ssl=True)
-    MagnitudeByDoc2.run()
+    MRMagnitudeByDoc.run()

@@ -25,7 +25,8 @@ class MRWordInDocs(MRJob):
     # Yields [document list] for each word in the line.
     def reducer(self, word, doc_names):
         for doc_name in doc_names:
-            # Splits with the second parameter that specifies the maximum number of splits to perform.
+            # Splits doc name with the second parameter can specifies the maximum number of splits to perform.
+            # It is necessary to remove the first part of string "hdfs:///sandbox.hortonworks.com:"
             doc_name = doc_name.split(':', 2)[2]
             # Stores document list with word as key in Redis.
             r.lpush("word:" + word, doc_name)
