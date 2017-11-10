@@ -22,10 +22,10 @@ Using some techniques learned in the Parallel Computing course at Universidad EA
   - The ``inverted_document_frequency.py`` file calculates a number for each main word using the formula **log(TOTAL_NUMB_OF_DOCUMENTS / NUMB_OF_DOCUMENTS_CONTAINING_THE_WORD)**.
   - The ``documents_containing_word.py`` file builds, for every main word, a list of the documents where that word appears. The list elements are sorted in descendant order using the word ocurrences as criterion.
   - The ``pig/calculate_tfidf.pig`` file uses the outputs of the ``norm_term_frequency.py`` and ``inverted_document_frequency.py`` files to join them by word and calculate the _tfidf_ value for each document-word pair.
-  - The ``pig/calculate_magnitude.pig`` file uses the output of the ``zeppelin/calculate_tfidf.pig`` script to calculate the magnitude of every document using the _tfidf_ values.
-  - The ``zeppelin/calculate_similarity_btw_docs.scala`` file uses the outputs of the ``pig/calculate_tfidf.pig`` and  ``pig/calculate_magnitude.pig`` scripts to calculate _Cosine similarity_ between every pair of documents. That is necessary to determine which are the more related documents given a specific one.
+  - The ``pig/calculate_magnitude.pig`` file uses the output of the ``pig/calculate_tfidf.pig`` script to calculate the magnitude of every document using the _tfidf_ values.
+  - The ``zeppelin/calculate_similarity_btw_docs.scala`` file uses the outputs of the ``pig/calculate_tfidf.pig`` and  ``pig/calculate_magnitude.pig`` scripts to calculate the _Cosine similarity_ between every pair of documents. That is necessary to determine which are the more related documents given a specific one.
   - The ``idf_by_word.py`` file is used to transfer the output of the ``inverted_document_frequency.py`` file to a remote Redis database.
-  - The ``word_in_docs`` file is used to transfer the output of the ``documents_containing_word.py`` file to a remote Redis database.
+  - The ``word_in_docs.py`` file is used to transfer the output of the ``documents_containing_word.py`` file to a remote Redis database.
   - The ``tfidf_for_word_in_docs.py`` file is used to transfer the output of the ``pig/calculate_tfidf.pig`` script to a remote Redis database.
   - The ``magnitude_by_doc.py`` file is used to transfer the output of the ``pig/calculate_magnitude.pig`` script to a remote Redis database.
   - The ``similarity_doc.py`` file is used to transfer the output of the ``zeppelin/calculate_similarity_btw_docs.scala`` file to a remote Redis database.
@@ -34,7 +34,7 @@ Using some techniques learned in the Parallel Computing course at Universidad EA
 #
 > The following section assumes that the whole dataset and the _Python_, _Pig_ and _Scala_ files reside on an environment with [Hortonworks 2.5] installed. It makes possible to execute the implemented jobs in _Hadoop_.
 #
-> The dataset must be in HDFS and that the path _user/asanch41/data_out/_ must exist there.
+> The dataset must be in HDFS and the path _user/asanch41/data_out/_ must exist there.
 #
 > The current directory on the terminal should be where the mentioned _Python_ files are located.
 
@@ -57,16 +57,18 @@ Using some techniques learned in the Parallel Computing course at Universidad EA
     $ python documents_containing_word.py hdfs://path/to/all/documents/*.txt -r hadoop --output-dir hdfs:///user/asanch41/data_out/documents_containing_word
     ```
 
-4. Go to the _Hive view _ on your _Hortonworks_ environment, create a database with the name **asanch41**, select it and then execute the following two queries:
+4. Go to the _Hive view_ on your _Hortonworks_ environment, create a database with the name **asanch41**, select it and then execute the following two queries:
     ```sh
-    CREATE EXTERNAL TABLE hive_doc_name_word_tfidf (doc_name STRING, word  STRING, tfidf FLOAT);
+    CREATE EXTERNAL TABLE hive_doc_name_word_tfidf (doc_name STRING, word STRING, tfidf FLOAT);
     ```
     ```sh
-    CREATE EXTERNAL TABLE hive_doc_magnitude (doc_name STRING, magnitude  DOUBLE);
+    CREATE EXTERNAL TABLE hive_doc_magnitude (doc_name STRING, magnitude DOUBLE);
     ```
-5. Go to the _Pig view_ on your _Hortonworks_ environment, create two scripts using the ``calculate_tfidf.pig`` and ``calculate_magnitude.pig`` file content and execute them from there in that order.
+    > This step is important because the ``pig/calculate_tfidf.pig`` and ``pig/calculate_magnitude.pig`` files will use the created tables to store their output, which will then be used by the ``zeppelin/calculate_similarity_btw_docs.scala`` file during its execution.
 
-6. Go to the _Zeppelin Notebook_ on your _Hortonworks_ environment, create a new note by pasting the content of the ``calculate_similarity_btw_docs.scala`` file and run it from there.
+5. Go to the _Pig view_ on your _Hortonworks_ environment, create two scripts using the ``pig/calculate_tfidf.pig`` and ``pig/calculate_magnitude.pig`` file content and execute them from there in that order.
+
+6. Go to the _Zeppelin Notebook_ on your _Hortonworks_ environment, create a new note by pasting the content of the ``zeppelin/calculate_similarity_btw_docs.scala`` file and run it from there.
 
 7. When you complete all previous steps, execute the following commands to send the processed data to the Azure Redis DB that serves the [Gutenberg Information Retrieval] application:
     ```sh
@@ -85,7 +87,7 @@ Using some techniques learned in the Parallel Computing course at Universidad EA
     $ python similarity_doc.py hdfs:///user/asanch41/data_out/similarity_btw_docs/part-00000 -r hadoop --output-dir hdfs:///user/asanch41/data_out/similarity_btw_docs_redis
     ```
 
-8. Finally, open the [Gutenberg Information Retrieval] application to enter a query and look for documents and their communities on the web.
+8. Finally, open the [Gutenberg Information Retrieval] application on the web. Enter a query and look for documents and their communities.
 
 [Python]: <https://www.python.org/downloads/>
 [mrjob]: <https://pythonhosted.org/mrjob/>
